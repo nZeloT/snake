@@ -1,4 +1,4 @@
-package com.nzelot.snake.game;
+package com.nzelot.snake.game.highscore;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -9,24 +9,8 @@ import java.util.ArrayList;
 import com.nzelot.snake.utils.Crypt;
 import com.nzelot.snake.utils.Settings;
 
-class HScore {
-	public int score = 0;
-	public String name = "";
-
-
-	public HScore(int s, String n) {
-		score = s;
-		name = n;
-	}
-
-	@Override
-	public String toString() {
-		return "HScore [score=" + score + ", name=" + name + "]";
-	}
-
-}
 public class Highscore {
-	private ArrayList<HScore> scoreList;
+	private ArrayList<Score> scoreList;
 
 	public Highscore() {
 		try{
@@ -39,7 +23,7 @@ public class Highscore {
 	public int checkScore(int score){
 		int ret = -1;
 		for (int i = 0; i < scoreList.size(); i++) {
-			if(scoreList.get(i).score < score){
+			if(scoreList.get(i).getScore() < score){
 				ret = i;
 				break;
 			}
@@ -51,7 +35,7 @@ public class Highscore {
 		if(pos < 0 || scoreList.size() <= pos)
 			return;
 
-		scoreList.add(pos, new HScore(score, checkForIllegalcharacters(name)));
+		scoreList.add(pos, new Score(score, checkForIllegalcharacters(name)));
 		scoreList.remove(scoreList.size()-1);
 		try {
 			writeScores();
@@ -64,7 +48,7 @@ public class Highscore {
 		if(pos < 0 || scoreList.size() <= pos)
 			return;
 
-		scoreList.get(pos).name = checkForIllegalcharacters(name);
+		scoreList.get(pos).setName(checkForIllegalcharacters(name));
 		try {
 			writeScores();
 		} catch (Exception e) {
@@ -74,13 +58,13 @@ public class Highscore {
 
 	private void readScores() throws Exception {
 		String fileName = Settings.getItem("HighscoreFile");
-		scoreList = new ArrayList<HScore>();
+		scoreList = new ArrayList<Score>();
 		BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(fileName), "ISO-8859-1"));
 		String in;
 		int j = 0;
 		while((in = br.readLine()) != null && (j++) < 5){
 			in = Crypt.decrypt(in, genD());
-			scoreList.add(new HScore(Integer.parseInt(in.split("#")[0]), in.split("#")[1]));
+			scoreList.add(new Score(Integer.parseInt(in.split("#")[0]), in.split("#")[1]));
 		}
 		br.close();
 	}
@@ -89,8 +73,8 @@ public class Highscore {
 		String fileName = Settings.getItem("HighscoreFile");
 		OutputStreamWriter w = new OutputStreamWriter(new FileOutputStream(fileName), "ISO-8859-1");
 
-		for (HScore hs : scoreList) {
-			w.write(Crypt.crypt(hs.score + "#" + hs.name + "", genD()) + "\r\n");
+		for (Score hs : scoreList) {
+			w.write(Crypt.crypt(hs.getScore() + "#" + hs.getName() + "", genD()) + "\r\n");
 		}
 		w.close();
 
@@ -128,7 +112,7 @@ public class Highscore {
 		return out;
 	}
 
-	public ArrayList<HScore> getScoreList() {
+	public ArrayList<Score> getScoreList() {
 		return scoreList;
 	}
 

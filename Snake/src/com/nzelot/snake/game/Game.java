@@ -23,7 +23,6 @@ public class Game extends JPanel implements KeyListener{
 	private Menu		m;
 	
 	private GAME_STATE 	state;
-	private Highscore	hs;
 	
 	private Field 		f;
 	private Player 		p;
@@ -33,8 +32,6 @@ public class Game extends JPanel implements KeyListener{
 	public Game() {
 		timer 	= null;
 		m		= new Menu();
-		
-		hs 		= new Highscore();
 		
 		Block.setSize( Integer.parseInt( Settings.getItem("BlockSize") ) );
 		
@@ -75,7 +72,7 @@ public class Game extends JPanel implements KeyListener{
 			
 			if(isDead()){
 				state = GAME_STATE.MENU;
-				endGame();
+				m.gameEndet(points);
 			}
 			
 			break;
@@ -84,6 +81,13 @@ public class Game extends JPanel implements KeyListener{
 			
 			if(m.getState() == MENU_STATE.INGAME)
 				newGame();
+			
+		case PAUSED:
+			
+			m.update();
+			
+			if(m.getState() == MENU_STATE.INGAME)
+				state = GAME_STATE.INGAME;
 			
 			break;
 		}
@@ -133,18 +137,6 @@ public class Game extends JPanel implements KeyListener{
 		return false;
 	}
 	
-	public void endGame(){
-		//Check Highscore
-		int place = hs.checkScore(points);
-		if(place > -1){
-			//Enter Highscore
-			m.setState(MENU_STATE.ENTER_HIGHSCROE);
-		}else{
-			//Show Highscore table
-			m.setState(MENU_STATE.SHOW_HIGHSCORE);
-		}
-	}
-	
 	public void render(Graphics g){
 		f.render(g);
 		
@@ -154,16 +146,8 @@ public class Game extends JPanel implements KeyListener{
 		g.drawString(String.format("SCORE: %04d", points), 10, Field.getPixSizeY()+14);
 		g.drawLine(0, Field.getPixSizeY(), Game.getWidthPix(), Field.getPixSizeY());
 		
-		if(state == GAME_STATE.MENU)
+		if(state == GAME_STATE.MENU || state == GAME_STATE.PAUSED)
 			m.render(g);
-	}
-	
-	public Field getField() {
-		return f;
-	}
-	
-	public Player getPlayer() {
-		return p;
 	}
 	
 	public static int getWidthPix(){
@@ -176,14 +160,14 @@ public class Game extends JPanel implements KeyListener{
 	
 	@Override
 	public void keyTyped(KeyEvent e) {
-		if(state == GAME_STATE.MENU){
+		if(state == GAME_STATE.MENU || state == GAME_STATE.PAUSED){
 			m.handleKeyInput(e);
 		}
 	}
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		if(state == GAME_STATE.MENU)
+		if(state == GAME_STATE.MENU || state == GAME_STATE.PAUSED)
 			return;
 		switch (e.getKeyCode()) {
 		case KeyEvent.VK_DOWN:
@@ -198,13 +182,18 @@ public class Game extends JPanel implements KeyListener{
 		case KeyEvent.VK_LEFT:
 			p.changeDir(3);
 			break;
+		case KeyEvent.VK_P:
+			state = GAME_STATE.PAUSED;
+			m.setState(MENU_STATE.PAUSED);
+			break;
+			
+		default:
+			break;
 		}
 	}
 
 	@Override
-	public void keyReleased(KeyEvent e) {
-		//NOPE
-	}
+	public void keyReleased(KeyEvent e) {/*NOPE*/}
 	
 	public void start(){
 		timer = new Timer();
