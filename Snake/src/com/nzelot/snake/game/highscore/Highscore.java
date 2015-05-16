@@ -1,13 +1,10 @@
 package com.nzelot.snake.game.highscore;
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.util.ArrayList;
 
 import com.nzelot.snake.utils.Crypt;
 import com.nzelot.snake.utils.Settings;
+
+import java.io.*;
+import java.util.ArrayList;
 
 public class Highscore {
 	private ArrayList<Score> scoreList;

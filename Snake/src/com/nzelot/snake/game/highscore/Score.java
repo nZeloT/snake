@@ -13,12 +13,12 @@ public class Score {
 		return name;
 	}
 	
-	public int getScore() {
-		return score;
-	}
-	
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public int getScore() {
+		return score;
 	}
 	
 	public void setScore(int score) {

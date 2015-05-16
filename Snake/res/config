@@ -1,5 +1,5 @@
 SelectionColor#0-134-203
 FieldSize#50x50
 BlockSize#10
-HighscoreFile#res/highscore
+HighscoreFile#Snake/res/highscore
 BaseSpeed#125

@@ -1,8 +1,6 @@
 package com.nzelot.snake.game;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Point;
+import java.awt.*;
 
 public class Block {
 	private static int size;
@@ -16,14 +14,18 @@ public class Block {
 		this.y = y;
 		this.c = c;
 	}
+
+	public static int getSize() {
+		return size;
+	}
+
+	public static void setSize(int size) {
+		Block.size = size;
+	}
 	
 	public void setPos(int x, int y){
 		this.x = x;
 		this.y = y;
-	}
-	
-	public void setPos(Point p){
-		setPos(p.x, p.y);
 	}
 	
 	public int getX() {
@@ -45,6 +47,10 @@ public class Block {
 	public Point getPos(){
 		return new Point(x, y);
 	}
+
+	public void setPos(Point p) {
+		setPos(p.x, p.y);
+	}
 	
 	public Color getColor() {
 		return c;
@@ -57,13 +63,5 @@ public class Block {
 	public void render(Graphics g){
 		g.setColor(c);
 		g.fillRect(x*size, y*size, size-1, size-1);
-	}
-	
-	public static void setSize(int size) {
-		Block.size = size;
-	}
-	
-	public static int getSize() {
-		return size;
 	}
 }

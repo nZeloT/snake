@@ -1,7 +1,6 @@
 package com.nzelot.snake.game;
 
-import java.awt.Color;
-import java.awt.Point;
+import java.awt.*;
 import java.util.ArrayList;
 
 public class Player {

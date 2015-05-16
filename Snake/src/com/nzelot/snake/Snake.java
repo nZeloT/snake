@@ -1,12 +1,13 @@
 package com.nzelot.snake;
 
-import javax.swing.JFrame;
-
 import com.nzelot.snake.game.Game;
+
+import javax.swing.*;
 
 public class Snake {
 
 	public static void main(String[] args) {
+
 		JFrame window = new JFrame("Snake");
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		

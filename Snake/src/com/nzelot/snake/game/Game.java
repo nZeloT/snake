@@ -1,19 +1,15 @@
 package com.nzelot.snake.game;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Point;
+import com.nzelot.snake.menu.MENU_STATE;
+import com.nzelot.snake.menu.Menu;
+import com.nzelot.snake.utils.Settings;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import javax.swing.JPanel;
-
-import com.nzelot.snake.menu.MENU_STATE;
-import com.nzelot.snake.menu.Menu;
-import com.nzelot.snake.utils.Settings;
 
 public class Game extends JPanel implements KeyListener{
 	private static final long serialVersionUID = -5506385121433927394L;
@@ -45,6 +41,14 @@ public class Game extends JPanel implements KeyListener{
 		newGame();
 		state = GAME_STATE.MENU;
 	}
+
+	public static int getWidthPix() {
+		return Field.getPixSizeX();
+	}
+
+	public static int getHeigthPix() {
+		return Field.getPixSizeY() + 20;
+	}
 	
 	public void newGame(){
 		f = new Field();
@@ -52,7 +56,7 @@ public class Game extends JPanel implements KeyListener{
 		f.addBlock(p.getChain());
 		f.spawnMeal();
 		points = 0;
-		
+
 		state = GAME_STATE.INGAME;
 	}
 	
@@ -60,36 +64,36 @@ public class Game extends JPanel implements KeyListener{
 		switch (state) {
 		case INGAME:
 			p.applyDirChange();
-			
+
 			Block b = null;
 			if((b = getMeal()) != null){
 				p.eatBlock(b);
 				++points;
 				f.spawnMeal();
 			}
-			
+
 			p.move();
-			
+
 			if(isDead()){
 				state = GAME_STATE.MENU;
 				m.gameEndet(points);
 			}
-			
+
 			break;
 		case MENU:
 			m.update();
-			
+
 			if(m.getState() == MENU_STATE.INGAME)
 				newGame();
-			
-		case PAUSED:
-			
-			m.update();
-			
-			if(m.getState() == MENU_STATE.INGAME)
+
+			case PAUSED:
+
+				m.update();
+
+				if(m.getState() == MENU_STATE.INGAME)
 				state = GAME_STATE.INGAME;
-			
-			break;
+
+				break;
 		}
 	}
 	
@@ -110,52 +114,44 @@ public class Game extends JPanel implements KeyListener{
 			b = f.getBlock(pos.x-1, pos.y);
 			break;
 		}
-		
+
 		//Do not eat yourself. :P
 		if(b != null && b.getColor() == Color.RED)
 			b = null;
-		
+
 		return b;
 	}
 	
 	public boolean isDead(){
 		Point pos = p.getChain().get(0).getPos();
-		
+
 		//1. Field Borders
 		if(		pos.x < 0 || pos.y < 0
-			||	pos.x >= Field.getSizeX() 
+				|| pos.x >= Field.getSizeX()
 			||  pos.y >= Field.getSizeY()
 			)
 			return true;
-		
+
 		//2. Crashed into itself, oder so
 		for(int i = 1; i < p.getChain().size(); i++)
 			if(pos.x == p.getChain().get(i).getX()
 			&& pos.y == p.getChain().get(i).getY())
 				return true;
-				
+
 		return false;
 	}
 	
 	public void render(Graphics g){
 		f.render(g);
-		
+
 		g.setColor(Color.BLACK);
 		g.fillRect(0, Field.getPixSizeY(), Game.getWidthPix(), Game.getHeigthPix());
 		g.setColor(Color.WHITE);
 		g.drawString(String.format("SCORE: %04d", points), 10, Field.getPixSizeY()+14);
 		g.drawLine(0, Field.getPixSizeY(), Game.getWidthPix(), Field.getPixSizeY());
-		
+
 		if(state == GAME_STATE.MENU || state == GAME_STATE.PAUSED)
 			m.render(g);
-	}
-	
-	public static int getWidthPix(){
-		return Field.getPixSizeX();
-	}
-	
-	public static int getHeigthPix(){
-		return Field.getPixSizeY() + 20;
 	}
 	
 	@Override
@@ -167,8 +163,10 @@ public class Game extends JPanel implements KeyListener{
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		if(state == GAME_STATE.MENU || state == GAME_STATE.PAUSED)
+		if (state == GAME_STATE.MENU || state == GAME_STATE.PAUSED) {
+			m.arrowHandler(e);
 			return;
+		}
 		switch (e.getKeyCode()) {
 		case KeyEvent.VK_DOWN:
 			p.changeDir(0);
@@ -184,7 +182,7 @@ public class Game extends JPanel implements KeyListener{
 			break;
 		case KeyEvent.VK_P:
 			state = GAME_STATE.PAUSED;
-			m.setState(MENU_STATE.PAUSED);
+			m.pauseGame();
 			break;
 			
 		default:

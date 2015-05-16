@@ -1,8 +1,6 @@
 package com.nzelot.snake.game;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Point;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -15,6 +13,30 @@ public class Field {
 
 	public Field() {
 		chain = new ArrayList<Block>();
+	}
+
+	public static int getSizeX() {
+		return Field.sizeX;
+	}
+
+	public static void setSizeX(int sizeX) {
+		Field.sizeX = sizeX;
+	}
+
+	public static int getSizeY() {
+		return Field.sizeY;
+	}
+
+	public static void setSizeY(int sizeY) {
+		Field.sizeY = sizeY;
+	}
+
+	public static int getPixSizeX() {
+		return Field.sizeX * Block.getSize();
+	}
+
+	public static int getPixSizeY() {
+		return Field.sizeY * Block.getSize();
 	}
 
 	public void spawnMeal(){
@@ -66,30 +88,6 @@ public class Field {
 
 		for(Block b : chain)
 			b.render(g);
-	}
-	
-	public static int getSizeX() {
-		return Field.sizeX;
-	}
-	
-	public static int getSizeY() {
-		return Field.sizeY;
-	}
-	
-	public static void setSizeX(int sizeX) {
-		Field.sizeX = sizeX;
-	}
-	
-	public static void setSizeY(int sizeY) {
-		Field.sizeY = sizeY;
-	}
-	
-	public static int getPixSizeX(){
-		return Field.sizeX * Block.getSize();
-	}
-
-	public static int getPixSizeY(){
-		return Field.sizeY * Block.getSize();
 	}
 
 }

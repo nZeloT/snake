@@ -12,14 +12,14 @@ public class Settings {
 
 	public static void readConfig(){
 		try{
-			map = new HashMap<String, String>();
-			BufferedReader br = new BufferedReader(new FileReader("res/config"));
+			map = new HashMap<>();
+			BufferedReader br = new BufferedReader(new FileReader("Snake/res/config"));
 			String in;
 			while((in = br.readLine()) != null){
 				map.put(in.split("#")[0], in.split("#")[1]);
 			}
 			br.close();
-		}catch(Exception e){
+		} catch (Exception ignored) {
 		}
 	}
 	
@@ -27,12 +27,12 @@ public class Settings {
 		try{
 			if(map == null)
 				return;
-			FileWriter w = new FileWriter("res/config");
+			FileWriter w = new FileWriter("Snake/res/config");
 			for(String key : map.keySet()){
 				w.write(key + "#" + map.get(key) + "\n");
 			}
 			w.close();
-		}catch(Exception e){
+		} catch (Exception ignored) {
 		}
 	}
 	
